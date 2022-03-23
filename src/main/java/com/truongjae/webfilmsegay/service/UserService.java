@@ -1,11 +1,12 @@
 package com.truongjae.webfilmsegay.service;
 
-import com.truongjae.webfilmsegay.entity.User;
+import com.truongjae.webfilmsegay.dto.request.user.UserSaveRequest;
+import com.truongjae.webfilmsegay.dto.response.user.UserResponse;
 
 import java.util.List;
 
 public interface UserService {
-    void insert(User user);
+    void insert(UserSaveRequest userSaveRequest);
 
-    List<User> findAll();
+    List<UserResponse> findAll();
 }

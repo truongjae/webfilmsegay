@@ -24,7 +24,6 @@ public class User {
     @Column(columnDefinition = "varchar(100)",name = "fullname")
     private String fullName;
 
-
     @ManyToMany
     @JoinTable(name = "permission", joinColumns = @JoinColumn(name = "user_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
     private List<Role> roles = new ArrayList<>();

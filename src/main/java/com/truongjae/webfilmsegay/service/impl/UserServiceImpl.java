@@ -1,9 +1,13 @@
 package com.truongjae.webfilmsegay.service.impl;
 
-import com.truongjae.webfilmsegay.entity.Role;
+import com.truongjae.webfilmsegay.dto.request.user.UserSaveRequest;
+import com.truongjae.webfilmsegay.dto.response.user.UserResponse;
 import com.truongjae.webfilmsegay.entity.User;
+import com.truongjae.webfilmsegay.mapper.request.user.UserSaveRequestMapper;
+import com.truongjae.webfilmsegay.mapper.response.user.UserResponseMapper;
 import com.truongjae.webfilmsegay.repository.UserRepository;
 import com.truongjae.webfilmsegay.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,20 +15,24 @@ import java.util.List;
 
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final UserResponseMapper userResponseMapper;
+
+    private final UserSaveRequestMapper userSaveRequestMapper;
 
     @Override
-    public void insert(User user) {
-        userRepository.save(user);
+    public void insert(UserSaveRequest userSaveRequest) {
+        userRepository.save(userSaveRequestMapper.to(userSaveRequest));
     }
 
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserResponse> findAll() {
+        return userResponseMapper.from(userRepository.findAll());
     }
 
 }
