@@ -8,7 +8,6 @@ import com.truongjae.webfilmsegay.mapper.response.user.UserResponseMapper;
 import com.truongjae.webfilmsegay.repository.UserRepository;
 import com.truongjae.webfilmsegay.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-
 
     private final UserRepository userRepository;
 

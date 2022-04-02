@@ -1,5 +1,6 @@
 package com.truongjae.webfilmsegay.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -18,5 +19,6 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private List<User> users = new ArrayList<>();
 }
