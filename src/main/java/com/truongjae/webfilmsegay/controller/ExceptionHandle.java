@@ -1,9 +1,6 @@
 package com.truongjae.webfilmsegay.controller;
 
-import com.truongjae.webfilmsegay.exception.APIError;
-import com.truongjae.webfilmsegay.exception.BadRequestException;
-import com.truongjae.webfilmsegay.exception.OKException;
-import com.truongjae.webfilmsegay.exception.ObjectNotFoundException;
+import com.truongjae.webfilmsegay.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +22,15 @@ public class ExceptionHandle {
         error.setMessage(e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<APIError> unAuthorizedException(UnauthorizedException e){
+        APIError error = new APIError();
+        error.setMessage(e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<APIError> badRequestException(BadRequestException e){
         APIError error = new APIError();

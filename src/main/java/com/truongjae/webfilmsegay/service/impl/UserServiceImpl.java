@@ -13,24 +13,38 @@ import com.truongjae.webfilmsegay.repository.RoleRepository;
 import com.truongjae.webfilmsegay.repository.UserRepository;
 import com.truongjae.webfilmsegay.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
-@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    private final UserResponseMapper userResponseMapper;
+    @Autowired
+    private UserResponseMapper userResponseMapper;
 
-    private final UserSaveRequestMapper userSaveRequestMapper;
+    @Autowired
+    private UserSaveRequestMapper userSaveRequestMapper;
 
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void register(UserSaveRequest userSaveRequest) {
@@ -40,6 +54,7 @@ public class UserServiceImpl implements UserService {
         Role role = roleRepository.findOneByName("ROLE_USER");
         User user = userSaveRequestMapper.to(userSaveRequest);
         user.setRoles(Arrays.asList(role));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         throw new OKException("Đăng kí tài khoản thành công");
     }
@@ -58,7 +73,28 @@ public class UserServiceImpl implements UserService {
         throw new OKException("Xóa thành công");
     }
 
+    @Override
+    public User findOneByUsername(String username) {
+        return userRepository.findOneByUsername(username);
+    }
 
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = findOneByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                mapRolesToAuthorities(user.getRoles()));
+    }
+
+
+    private static Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+    }
 
 }
 
